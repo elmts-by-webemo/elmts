@@ -1,0 +1,9 @@
+/node_modules/
+/public_html/files/dynamic/
+/public_html/libraries/
+/vendor/
+composer.phar
+composer.lock
+.env
+.env.backup
+.env.production
