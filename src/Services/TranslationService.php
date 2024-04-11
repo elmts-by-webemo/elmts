@@ -31,7 +31,7 @@ class TranslationService implements ITranslationService {
      * @var IVariableService
      */
     private $variableService;
-    
+
     /**
      * Tablica zawierająca załadowane tłumaczenia.
      *
@@ -45,9 +45,11 @@ class TranslationService implements ITranslationService {
      *
      * @param ITranslationLoader $translationLoader Obiekt loadera tłumaczeń.
      */
-    public function __construct(ITranslationLoader $translationLoader,
-        IVariableService $variableService) {
+    public function __construct(ITranslationLoader $translationLoader) {
         $this->translationLoader = $translationLoader;
+    }
+
+    public function setVariableService(IVariableService $variableService) {
         $this->variableService = $variableService;
     }
 
