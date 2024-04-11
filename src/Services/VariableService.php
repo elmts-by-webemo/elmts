@@ -69,7 +69,7 @@ class VariableService implements IVariableService
         $variablesPath = $baseLanguagePath . "{$currentLanguage}/variables.php";
 
         if (!file_exists($variablesPath)) {
-            throw new ElmtsException("Variables file ({$variablePath}) not found for language: {$currentLanguage}");
+            throw new ElmtsException("Variables file ({$variablesPath}) not found for language: {$currentLanguage}");
         }
 
         $this->variables = include $variablesPath;
