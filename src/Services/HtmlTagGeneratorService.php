@@ -33,11 +33,15 @@ class HtmlTagGeneratorService implements IHtmlTagGeneratorService
      */
     public static function createTag(string $tagName, array $attributes = []): string
     {
-        $attributeStrings = [];
-        foreach ($attributes as $key => $value) {
-            $attributeStrings[] = sprintf('%s="%s"', $key, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'));
-        }
+        $attributeStrings = array_map(function ($key, $value) {
+            return sprintf('%s="%s"', $key, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'));
+        }, array_keys($attributes), $attributes);
 
-        return sprintf('<%s %s>', $tagName, implode(' ', $attributeStrings));
+        // Dla tagów, które wymagają zamknięcia (np. <script>), używamy innego formatu
+        if (in_array($tagName, ['script', 'a', 'button'])) {
+            return sprintf('<%s %s></%s>', $tagName, implode(' ', $attributeStrings), $tagName);
+        } else { // Dla tagów samozamykających (np. <img>, <input>, <link>)
+            return sprintf('<%s %s>', $tagName, implode(' ', $attributeStrings));
+        }
     }
 }

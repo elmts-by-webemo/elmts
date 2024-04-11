@@ -38,9 +38,10 @@ class CssLibraryLoaderStrategy extends LibraryLoader {
     protected function getAttributeMap(): array {
         return [
             'src' => 'href',
-            'rel' => 'stylesheet', // Ustawienie domyślnej wartości
+            'rel' => 'rel',
             'integrity' => 'integrity',
             'crossorigin' => 'crossorigin',
+            'referrerpolicy'=>'referrerpolicy',
         ];
     }
 

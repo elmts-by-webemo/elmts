@@ -41,9 +41,11 @@ class JsLibraryLoaderStrategy extends LibraryLoader
     protected function getAttributeMap(): array {
         return [
             'src' => 'src',
-            'async' => 'async', // Możliwość ustawienia wartości domyślnych
-            'defer' => 'defer',
-            'type' => 'text/javascript', // Ustawienie domyślnej wartości
+            'async' => 'async', 
+            'integrity' => 'integrity',
+            'type' => 'type',
+            'crossorigin'=>'crossorigin',
+            'referrerpolicy'=>'referrerpolicy'
         ];
     }
 
