@@ -1,3 +1,3 @@
-# elmts
+# Core `elmts`
 
 ## Credits
