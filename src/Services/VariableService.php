@@ -4,14 +4,14 @@ namespace Elmts\Core\Services;
 
 use Elmts\Core\Interfaces\IVariableService;
 use Elmts\Core\Interfaces\IConfig;
-use Elmts\Core\Interfaces\ILanguageService;
+use Elmts\Core\Interfaces\ILanguageController;
 use Elmts\Core\Exceptions\ElmtsException;
 
 /**
  * Serwis VariableService odpowiedzialny za zarządzanie i dostęp do zmiennych konfiguracyjnych aplikacji.
  *
  * Umożliwia ładowanie konfiguracji zmiennych specyficznych dla wybranego języka. Klasa współpracuje z
- * serwisami ILanguageService oraz IPathsConfig, aby dynamicznie określić i załadować odpowiedni plik
+ * kontrolerem ILanguageController oraz serwisem IPathsConfig, aby dynamicznie określić i załadować odpowiedni plik
  * konfiguracyjny zmiennych na podstawie bieżącego ustawienia języka.
  *
  * @package Elmts\Core\Services
@@ -19,11 +19,11 @@ use Elmts\Core\Exceptions\ElmtsException;
 class VariableService implements IVariableService
 {
      /**
-     * Serwis zarządzający informacjami o bieżącym języku w aplikacji.
+     * Kontroler zarządzający informacjami o bieżącym języku w aplikacji.
      *
-     * @var ILanguageService
+     * @var ILanguageController
      */
-    private $languageService;
+    private $languageController;
 
     /**
      * Serwis zarządzający konfiguracją ścieżek w aplikacji, używany do uzyskania
@@ -44,12 +44,12 @@ class VariableService implements IVariableService
     /**
      * Konstruktor klasy VariableService.
      *
-     * @param ILanguageService $languageService Serwis do zarządzania językami, umożliwia określenie bieżącego języka aplikacji.
+     * @param ILanguageController $languageController Kontroler do zarządzania językami, umożliwia określenie bieżącego języka aplikacji.
      * @param IPathsConfig $pathsConfig Serwis do zarządzania ścieżkami, wykorzystywany do ustalenia lokalizacji plików konfiguracyjnych.
      */
-    public function __construct(ILanguageService $languageService, IConfig $pathsConfig)
+    public function __construct(ILanguageController $languageController, IConfig $pathsConfig)
     {
-        $this->languageService = $languageService;
+        $this->languageController = $languageController;
         $this->pathsConfig = $pathsConfig;
         $this->loadVariables();
     }
@@ -64,7 +64,7 @@ class VariableService implements IVariableService
      */
     protected function loadVariables()
     {
-        $currentLanguage = $this->languageService->getCurrentLanguage();
+        $currentLanguage = $this->languageController->getCurrentLanguage();
         $baseLanguagePath = $this->pathsConfig->getConfig('location');
         $variablesPath = $baseLanguagePath . "{$currentLanguage}/variables.php";
 
