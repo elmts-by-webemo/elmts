@@ -4,6 +4,7 @@ namespace Elmts\Core\Services;
 
 use Elmts\Core\Interfaces\ITranslationService;
 use Elmts\Core\Interfaces\ITranslationLoader;
+use Elmts\Core\Interfaces\IVariableService;
 use Elmts\Core\Exceptions\ElmtsException;
 
 /**
@@ -25,6 +26,13 @@ class TranslationService implements ITranslationService {
     private $translationLoader;
 
     /**
+     * Serwis zarządzający zmiennymi konfiguracyjnymi.
+     *
+     * @var IVariableService
+     */
+    private $variableService;
+    
+    /**
      * Tablica zawierająca załadowane tłumaczenia.
      *
      * @var array
@@ -37,8 +45,10 @@ class TranslationService implements ITranslationService {
      *
      * @param ITranslationLoader $translationLoader Obiekt loadera tłumaczeń.
      */
-    public function __construct(ITranslationLoader $translationLoader) {
+    public function __construct(ITranslationLoader $translationLoader,
+        IVariableService $variableService) {
         $this->translationLoader = $translationLoader;
+        $this->variableService = $variableService;
     }
 
     /**
@@ -59,6 +69,10 @@ class TranslationService implements ITranslationService {
      * @return string|null Tłumaczenie dla podanego klucza lub null, jeśli tłumaczenie nie zostało znalezione.
      */
     public function getTranslation(string $key): ?string {
-        return $this->translations[$key] ?? null;
+        $translation = $this->translations[$key] ?? null;
+        if ($translation !== null) {
+            $translation = $this->variableService->replacePlaceholders($translation);
+        }
+        return $translation;
     }
 }

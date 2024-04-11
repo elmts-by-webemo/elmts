@@ -90,4 +90,29 @@ class VariableService implements IVariableService
 
         return $this->variables[$key];
     }
+
+    /**
+     * Zamienia zastępcze zmienne w ciągu znaków na ich odpowiadające wartości.
+     *
+     * @param string $inputString Ciąg znaków zawierający zastępcze zmienne do zastąpienia.
+     * @return string Zmodyfikowany ciąg znaków z zastąpionymi zmiennymi.
+     */
+    public function replacePlaceholders(string $inputString): string 
+    {
+        preg_match_all('/{{(.*?)}}/', $inputString, $matches);
+
+        if (empty($matches[0])) {
+            return $inputString;
+        }
+
+        $placeholders = $matches[0];
+
+        foreach ($placeholders as $placeholder) {
+            $key = trim($placeholder, '{}');
+            $value = $this->get($key);
+            $inputString = str_replace($placeholder, $value, $inputString);
+        }
+
+        return $inputString;
+    }
 }
