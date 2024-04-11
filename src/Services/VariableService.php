@@ -65,11 +65,11 @@ class VariableService implements IVariableService
     protected function loadVariables()
     {
         $currentLanguage = $this->languageController->getCurrentLanguage();
-        $baseLanguagePath = $this->pathsConfig->getConfig('location');
+        $baseLanguagePath = $this->pathsConfig->getConfig('path_location');
         $variablesPath = $baseLanguagePath . "{$currentLanguage}/variables.php";
 
         if (!file_exists($variablesPath)) {
-            throw new ElmtsException("Variables file ({$variablesPath}) not found for language: {$currentLanguage}");
+            throw new ElmtsException("Variables file (".$variablesPath.") not found for language: ".$currentLanguage);
         }
 
         $this->variables = include $variablesPath;
