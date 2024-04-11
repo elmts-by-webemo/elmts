@@ -2,6 +2,9 @@
 
 namespace Elmts\Core\Validation;
 
+use Elmts\Core\Interfaces\IValidationResult;
+
+
 /**
  * Klasa ValidationResult przechowuje wyniki procesu walidacji.
  *
@@ -9,8 +12,11 @@ namespace Elmts\Core\Validation;
  * oraz do uzyskiwania dostępu do ewentualnych błędów walidacji.
  * Nie rzuca wyjątków bezpośrednio, ale może być używana do przechowywania
  * informacji o błędach wykrytych podczas procesu walidacji.
+ *
+ * @package Elmts\Core\Validation
  */
-class ValidationResult {
+
+class ValidationResult implements IValidationResult {
     /**
      * @var bool Flaga wskazująca, czy walidacja zakończyła się sukcesem.
      */

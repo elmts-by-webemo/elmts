@@ -2,17 +2,13 @@
 
 namespace Elmts\Core\Interfaces;
 
-use Elmts\Core\Exceptions\ElmtsException;
-
 /**
  * Interfejs IValidationResult definiuje kontrakt dla wyników walidacji.
  *
- * Określa metody, które muszą być dostępne w klasach wyników walidacji,
- * umożliwiając łatwe sprawdzenie, czy walidacja zakończyła się sukcesem,
- * oraz dostęp do ewentualnych błędów walidacji.
- *
- * Implementacje tego interfejsu mogą rzucać ElmtsException w przypadku
- * wystąpienia błędów wewnętrznych uniemożliwiających prawidłową walidację.
+ * Zapewnia mechanizm do łatwego sprawdzenia, czy walidacja zakończyła się sukcesem,
+ * oraz umożliwia dostęp do ewentualnych błędów walidacji. Implementacje tego interfejsu
+ * umożliwiają gromadzenie informacji o wynikach procesu walidacji, w tym o wszelkich
+ * naruszeniach zdefiniowanych reguł walidacji.
  *
  * @package Elmts\Core\Interfaces
  */
@@ -35,7 +31,6 @@ interface IValidationResult {
      * Dodaje błąd do wyników walidacji.
      *
      * @param string $error Komunikat o błędzie do dodania.
-     * @throws ElmtsException Gdy nie można prawidłowo przetworzyć błędu.
      */
     public function addError(string $error): void;
 }

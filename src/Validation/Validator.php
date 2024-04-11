@@ -3,7 +3,6 @@
 namespace Elmts\Core\Validation;
 
 use Elmts\Core\Interfaces\IValidator;
-use Elmts\Core\Exceptions\ElmtsException;
 
 /**
  * Klasa Validator służy do walidacji danych wejściowych na podstawie zdefiniowanych ograniczeń.
@@ -18,8 +17,6 @@ class Validator implements IValidator {
      * @param array $constraints Ograniczenia użyte do walidacji wartości.
      *
      * @return ValidationResult Obiekt ValidationResult zawierający wyniki walidacji.
-     *
-     * @throws ElmtsException Gdy walidacja napotka na problem, uniemożliwiający jej wykonanie.
      */
     public function validate($value, array $constraints = []): ValidationResult {
         
@@ -40,6 +37,34 @@ class Validator implements IValidator {
 
         $isValid = empty($errors);
 
+        return new ValidationResult($isValid, $errors);
+    }
+
+    /**
+     * Waliduje tablicę asocjacyjną na podstawie zdefiniowanych wymagań.
+     *
+     * @param array $data Tablica do walidacji.
+     * @param array $requirements Wymagania, gdzie klucz to nazwa klucza w $data,
+     *                            a wartość określa, czy wartość może być pusta.
+     *
+     * @return ValidationResult Zwraca obiekt ValidationResult z wynikami walidacji,
+     *                          w tym informacje o wszelkich naruszeniach zasad.
+     */
+    public function validateArray(array $data, array $requirements): ValidationResult {
+        $errors = [];
+
+        foreach ($requirements as $key => $valueMustNotBeEmpty) {
+            if (!array_key_exists($key, $data)) {
+                $errors[] = "The required key '{$key}' is missing from the data.";
+                continue;
+            }
+
+            if ($valueMustNotBeEmpty && empty($data[$key])) {
+                $errors[] = "The key '{$key}' cannot be empty.";
+            }
+        }
+
+        $isValid = empty($errors);
         return new ValidationResult($isValid, $errors);
     }
 }
