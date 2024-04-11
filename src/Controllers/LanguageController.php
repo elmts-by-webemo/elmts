@@ -15,11 +15,15 @@ use Elmts\Core\Exceptions\ElmtsException;
  * - Wykrywanie preferowanego języka użytkownika.
  * - Ustawianie bieżącego języka aplikacji.
  * - Pobieranie tłumaczeń dla określonych kluczy.
- * 
+ *
  * Wykorzystuje CookieService do przechowywania preferowanego języka w ciasteczkach oraz
- * TranslationLoaderService do ładowania i dostępu do tłumaczeń.
+ * TranslationService do ładowania i dostępu do tłumaczeń.
  *
  * @package Elmts\Core\Controllers
+ * @version 1.1
+ * @creationDate 2024-04-08
+ * @modificationDate 2024-04-11
+ * @GPT simplyPHPDoc-Gen
  */
 class LanguageController implements ILanguageController
 {
@@ -30,6 +34,11 @@ class LanguageController implements ILanguageController
      */
     private string $currentLanguage;
 
+    /**
+     * Serwis do zarządzania tłumaczeniami.
+     *
+     * @var ITranslationService
+     */
     private ITranslationService $translationService; 
 
     /**
