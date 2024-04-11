@@ -4,7 +4,7 @@ namespace Elmts\Core\Controllers;
 
 use Elmts\Core\Interfaces\ICookieService;
 use Elmts\Core\Interfaces\ILanguageController;
-use Elmts\Core\Loaders\TranslationLoader;
+use Elmts\Core\Interfaces\ITranslationService;
 use Elmts\Core\Interfaces\ILanguageService;
 use Elmts\Core\Exceptions\ElmtsException;
 
@@ -29,12 +29,9 @@ class LanguageController implements ILanguageController
      * @var string
      */
     private string $currentLanguage;
-    /**
-     * Serwis do ładowania tłumaczeń.
-     *
-     * @var TranslationsLoader
-     */
-    private TranslationLoader $translationsLoader;
+
+    private ITranslationService $translationService; 
+
     /**
      * Serwis do zarządzania ciasteczkami.
      *
@@ -63,9 +60,9 @@ class LanguageController implements ILanguageController
      * @param ICookieService $cookieService Serwis do zarządzania ciasteczkami.
      * @param ILanguageService $languageService Serwis zarządzający dostępnymi językami.
      */
-    public function __construct(TranslationLoader $translationsLoader, ICookieService $cookieService, ILanguageService $languageService)
+    public function __construct(ITranslationService $translationService, ICookieService $cookieService, ILanguageService $languageService)
     {
-        $this->translationsLoader = $translationsLoader;
+        $this->translationService = $translationService;
         $this->cookieService = $cookieService;
         $this->languageService = $languageService;
 
@@ -109,7 +106,7 @@ class LanguageController implements ILanguageController
         $this->currentLanguage = $language;
         try {
             $this->cookieService->set('language', $language, time() + 3600);
-            $this->translationsLoader->load($language);
+            $this->translationService->load($language);
         } catch (ElmtsException $e) {
             throw $e;
         }
@@ -171,7 +168,7 @@ class LanguageController implements ILanguageController
     public function translate(string $key): string
     {
         try {
-            return $this->translationsLoader->getTranslation($key) ?? $key;
+            return $this->translationService->getTranslation($key) ?? $key;
         } catch (ElmtsException $e) {
             throw $e;
         }
