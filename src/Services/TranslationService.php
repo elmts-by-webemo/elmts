@@ -15,13 +15,13 @@ class TranslationService implements ITranslationService
     private $locationLoader;
     private $currentLanguage;
 
-    private function __construct(ILocationLoader $locationLoader, $language = APP_LOCALE)
+    private function __construct(ILocationLoader $locationLoader, $language = envParam('APP_LOCALE'))
     {
         $this->locationLoader = $locationLoader;
         $this->setLanguage($language);
     }
 
-    public static function getInstance(ILocationLoader $locationLoader, $language = APP_LOCALE): TranslationService
+    public static function getInstance(ILocationLoader $locationLoader, $language = envParam('APP_LOCALE')): TranslationService
     {
         if (self::$instance === null) {
             self::$instance = new self($locationLoader, $language);
