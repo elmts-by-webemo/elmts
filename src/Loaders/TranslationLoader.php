@@ -2,7 +2,7 @@
 
 namespace Elmts\Core\Loaders;
 
-use Elmts\Core\Interfaces\ILocationLoader;
+use Elmts\Core\Interfaces\ITranslationLoader;
 use Elmts\Core\Exceptions\ElmtsException;
 use App\Config\MainConfig;
 
