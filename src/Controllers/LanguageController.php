@@ -106,7 +106,6 @@ class LanguageController implements ILanguageController
         $this->currentLanguage = $language;
         try {
             $this->cookieService->set('language', $language, time() + 3600);
-            $this->translationService->load($language);
         } catch (ElmtsException $e) {
             throw $e;
         }
