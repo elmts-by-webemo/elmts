@@ -3,78 +3,50 @@
 namespace Elmts\Core\Services;
 
 use Elmts\Core\Interfaces\ITranslationService;
-use Elmts\Core\Interfaces\ITranslationLoader;
-use Elmts\Core\Interfaces\IVariableService;
+use Elmts\Core\Interfaces\ILocationLoader;
 use Elmts\Core\Exceptions\ElmtsException;
 
-/**
- * Serwis odpowiedzialny za ładowanie i zarządzanie tłumaczeniami.
- *
- * Implementuje interfejs ITranslationService, zapewniając funkcjonalność
- * do ładowania tłumaczeń z plików i pobierania indywidualnych tłumaczeń
- * na podstawie klucza. Korzysta z klasy TranslationLoader do ładowania tłumaczeń.
- * W przypadku problemów z ładowaniem pliku tłumaczeń, zostanie zgłoszony wyjątek ElmtsException.
- * 
- * @package Elmts\Core\Service
- */
-class TranslationService implements ITranslationService {
-    /**
-     * Loader tłumaczeń.
-     *
-     * @var ITranslationLoader
-     */
-    private $translationLoader;
+class TranslationService implements ITranslationService
+{
+    private static $instance = null;
+    private $translations = [];
+    private $variables = [];
 
-    /**
-     * Serwis zarządzający zmiennymi konfiguracyjnymi.
-     *
-     * @var IVariableService
-     */
-    private $variableService;
+    private $locationLoader;
+    private $currentLanguage;
 
-    /**
-     * Tablica zawierająca załadowane tłumaczenia.
-     *
-     * @var array
-     */
-    private array $translations = [];
-
-    /**
-     * Konstruktor klasy TranslationService.
-     * Inicjalizuje obiekt loadera tłumaczeń.
-     *
-     * @param ITranslationLoader $translationLoader Obiekt loadera tłumaczeń.
-     */
-    public function __construct(ITranslationLoader $translationLoader) {
-        $this->translationLoader = $translationLoader;
+    private function __construct(ILocationLoader $locationLoader, $language = APP_LOCALE)
+    {
+        $this->locationLoader = $locationLoader;
+        $this->setLanguage($language);
     }
 
-    public function setVariableService(IVariableService $variableService) {
-        $this->variableService = $variableService;
-    }
-
-    /**
-     * Ładuje tłumaczenia dla określonego języka.
-     *
-     * @param string $language Kod języka, dla którego mają zostać załadowane tłumaczenia.
-     * @throws ElmtsException Jeśli plik tłumaczeń nie istnieje.
-     * @return void
-     */
-    public function load(string $language): void {
-        $this->translations = $this->translationLoader->load($language);
-    }
-
-    /**
-     * Zwraca tłumaczenie dla podanego klucza.
-     *
-     * @param string $key Klucz tłumaczenia, którego wartość ma zostać zwrócona.
-     * @return string|null Tłumaczenie dla podanego klucza lub null, jeśli tłumaczenie nie zostało znalezione.
-     */
-    public function getTranslation(string $key): ?string {
-        $translation = $this->translations[$key] ?? null;
-        if ($translation !== null) {
-            $translation = $this->variableService->replacePlaceholders($translation);
+    public static function getInstance(ILocationLoader $locationLoader, $language = APP_LOCALE): TranslationService
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($locationLoader, $language);
         }
-        return $translation;
+        return self::$instance;
+    }
+
+    public function setLanguage($language)
+    {
+        try {
+            $this->translations = $this->locationLoader->load($language);
+            $this->variables = $this->locationLoader->loadVariables($language);
+            $this->currentLanguage = $language;
+        } catch (ElmtsException $e) {
+            throw new ElmtsException("Could not load translations or variables for language: $language", 0, $e);
+        }
+    }
+
+    public function get(string $key, string $default = ''): string
+    {
+        return $this->translations[$key] ?? $default;
+    }
+
+    public function getVariable(string $key, $default = null)
+    {
+        return $this->variables[$key] ?? $default;
     }
 }

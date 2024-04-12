@@ -3,27 +3,34 @@
 namespace Elmts\Core\Interfaces;
 
 /**
- * Interfejs definiujący metody ładowania i otrzymywania tłumaczeń.
- *
- * Zapewnia mechanizm dla ładowania zestawu tłumaczeń dla określonego języka
- * oraz pobierania indywidualnych tłumaczeń na podstawie klucza.
- *
+ * Interfejs ITranslation
+ * 
+ * Zapewnia interfejs dla usług tłumaczeniowych, umożliwiając pobieranie przetłumaczonych
+ * ciągów znaków i zmiennych.
+ * 
  * @package Elmts\Core\Interfaces
+ * @version 1.0.0
+ * @creation_date 2024-04-11
+ * @modification_date 2024-04-11
+ * @GPT_name simplyPHPDoc-Gen
  */
-interface ITranslationService {
+interface ITranslationService
+{
     /**
-     * Ładuje tłumaczenia dla określonego języka.
+     * Pobiera przetłumaczony ciąg znaków za pomocą jego klucza. Zwraca wartość domyślną, jeśli klucz nie zostanie znaleziony.
      *
-     * @param string $language Kod języka, dla którego mają zostać załadowane tłumaczenia.
-     * @return void
+     * @param string $key Klucz ciągu tłumaczenia do pobrania.
+     * @param string $default Opcjonalnie. Wartość domyślna, która ma zostać zwrócona, jeśli tłumaczenie nie zostanie znalezione. Domyślnie jest to pusty ciąg.
+     * @return string Przetłumaczony ciąg znaków lub wartość domyślna, jeśli nie zostanie znaleziony.
      */
-    public function load(string $language): void;
+    public function get(string $key, string $default = ''): string;
 
     /**
-     * Pobiera tłumaczenie na podstawie podanego klucza.
+     * Pobiera przetłumaczoną zmienną za pomocą jej klucza. Zwraca wartość domyślną, jeśli klucz nie zostanie znaleziony.
      *
-     * @param string $key Klucz, dla którego ma zostać zwrócone tłumaczenie.
-     * @return string|null Tłumaczenie dla podanego klucza lub null, jeśli tłumaczenie nie zostało znalezione.
+     * @param string $key Klucz zmiennej tłumaczenia do pobrania.
+     * @param mixed $default Opcjonalnie. Wartość domyślna, która ma zostać zwrócona, jeśli tłumaczenie nie zostanie znalezione. Domyślnie jest to null.
+     * @return mixed Przetłumaczona zmienna lub wartość domyślna, jeśli nie zostanie znaleziona.
      */
-    public function getTranslation(string $key): ?string;
+    public function getVariable(string $key, $default = null);
 }
