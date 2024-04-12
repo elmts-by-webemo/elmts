@@ -2,7 +2,7 @@
 
 namespace Elmts\Core\Loaders;
 
-use Elmts\Core\Interfaces\ITranslationLoader;
+use Elmts\Core\Interfaces\ILocationLoader;
 use Elmts\Core\Exceptions\ElmtsException;
 use App\Config\MainConfig;
 
@@ -14,11 +14,11 @@ use App\Config\MainConfig;
 class TranslationLoader implements ITranslationLoader
 {
     /**
-     * Ścieżka do katalogu zawierającego pliki tłumaczeń.
+     * Ścieżka do katalogu zawierającego pliki tłumaczeń i zmiennych
      *
      * @var string
      */
-    private $translationsPath;
+    private $locationPath;
 
     /**
      * Konstruktor klasy TranslationLoader.
@@ -26,7 +26,7 @@ class TranslationLoader implements ITranslationLoader
      */
     public function __construct(MainConfig $pathsConfig)
     {
-        $this->translationsPath = $pathsConfig->getConfig('path_location');
+        $this->locationPath = $pathsConfig->getConfig('path_location');
     }
 
     /**
@@ -42,11 +42,21 @@ class TranslationLoader implements ITranslationLoader
      */
     public function load(string $language): array
     {
-        $translationsFullPath = $this->translationsPath . "{$language}/translations.php";
-        if (file_exists($translationsFullPath)) {
-            return require $translationsFullPath;
+        $locationFullPath = $this->locationPath . "{$language}/translations.php";
+        if (file_exists($locationFullPath)) {
+            return require $locationFullPath;
         } else {
-            throw new ElmtsException("Translation file not found: {$translationsFullPath}");
+            throw new ElmtsException("Translation file not found: {$locationFullPath}");
+        }
+    }
+
+    public function loadVariables(string $language): array
+    {
+        $locationFullPath = $this->locationPath . "{$language}/variables.php";
+        if (file_exists($locationFullPath)) {
+            return require $locationFullPath;
+        } else {
+            throw new ElmtsException("Variables file not found: {$locationFullPath}");
         }
     }
 }

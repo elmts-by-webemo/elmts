@@ -4,7 +4,6 @@ namespace Elmts\Core\Controllers;
 
 use Elmts\Core\Interfaces\ICookieService;
 use Elmts\Core\Interfaces\ILanguageController;
-use Elmts\Core\Interfaces\ITranslationService;
 use Elmts\Core\Interfaces\ILanguageService;
 use Elmts\Core\Exceptions\ElmtsException;
 
@@ -35,13 +34,6 @@ class LanguageController implements ILanguageController
     private string $currentLanguage;
 
     /**
-     * Serwis do zarządzania tłumaczeniami.
-     *
-     * @var ITranslationService
-     */
-    private ITranslationService $translationService; 
-
-    /**
      * Serwis do zarządzania ciasteczkami.
      *
      * @var ICookieService
@@ -69,7 +61,7 @@ class LanguageController implements ILanguageController
      * @param ICookieService $cookieService Serwis do zarządzania ciasteczkami.
      * @param ILanguageService $languageService Serwis zarządzający dostępnymi językami.
      */
-    public function __construct(ITranslationService $translationService, ICookieService $cookieService, ILanguageService $languageService)
+    public function __construct(ICookieService $cookieService, ILanguageService $languageService)
     {
         $this->translationService = $translationService;
         $this->cookieService = $cookieService;
@@ -162,24 +154,5 @@ class LanguageController implements ILanguageController
     public function getAvailableLanguages(): array
     {
         return explode('|', $_ENV['LOCATION_TRANSLATIONS']);
-    }
-
-    /**
-     * Zwraca tłumaczenie dla podanego klucza.
-     * 
-     * Jeśli tłumaczenie dla klucza nie zostanie znalezione, zwraca sam klucz.
-     * Rzuca ElmtsException w przypadku problemów z dostępem do tłumaczeń.
-     *
-     * @param string $key Klucz tłumaczenia do pobrania.
-     * @throws ElmtsException W przypadku problemów z pobraniem tłumaczenia.
-     * @return string Tłumaczenie dla klucza lub klucz, jeśli tłumaczenie nie zostanie znalezione.
-     */
-    public function translate(string $key): string
-    {
-        try {
-            return $this->translationService->getTranslation($key) ?? $key;
-        } catch (ElmtsException $e) {
-            throw $e;
-        }
     }
 }

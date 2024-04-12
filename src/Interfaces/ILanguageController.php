@@ -27,13 +27,4 @@ interface ILanguageController
      * @return array Tablica z kodami dostępnych języków.
      */
     public function getAvailableLanguages(): array;
-
-    /**
-     * Tłumaczy podany klucz na aktualnie ustawiony język.
-     * 
-     * @param string $key Klucz tłumaczenia do pobrania.
-     * @throws ElmtsException W przypadku problemów z pobraniem tłumaczenia.
-     * @return string Tłumaczenie dla klucza lub klucz, jeśli tłumaczenie nie zostanie znalezione.
-     */
-    public function translate(string $key): string;
 }

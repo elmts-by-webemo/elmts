@@ -33,4 +33,13 @@ interface ITranslationService
      * @return mixed Przetłumaczona zmienna lub wartość domyślna, jeśli nie zostanie znaleziona.
      */
     public function getVariable(string $key, $default = null);
+
+     /**
+     * Tłumaczy podany klucz na aktualnie ustawiony język.
+     * 
+     * @param string $key Klucz tłumaczenia do pobrania.
+     * @throws ElmtsException W przypadku problemów z pobraniem tłumaczenia.
+     * @return string Tłumaczenie dla klucza lub klucz, jeśli tłumaczenie nie zostanie znalezione.
+     */
+    public function translate(string $key): string;
 }

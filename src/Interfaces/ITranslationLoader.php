@@ -9,7 +9,7 @@ use Elmts\Core\Exceptions\ElmtsException;
  *
  * @package Elmts\Core\Interfaces
  */
-interface ILocationLoader
+interface ITranslationLoader
 {
     /**
      * Ładuje tłumaczenia dla określonego języka z pliku.
