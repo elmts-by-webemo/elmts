@@ -63,7 +63,6 @@ class LanguageController implements ILanguageController
      */
     public function __construct(ICookieService $cookieService, ILanguageService $languageService)
     {
-        $this->translationService = $translationService;
         $this->cookieService = $cookieService;
         $this->languageService = $languageService;
 
