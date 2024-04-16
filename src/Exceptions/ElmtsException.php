@@ -2,6 +2,7 @@
 
 namespace Elmts\Core\Exceptions;
 
+
 /**
  * Klasa ElmtsException służąca jako bazowy wyjątek dla wszystkich wyjątków specyficznych dla aplikacji Elmts.
  *
