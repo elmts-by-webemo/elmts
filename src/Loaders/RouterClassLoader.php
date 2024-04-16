@@ -3,6 +3,7 @@ namespace Elmts\Core\Loaders;
 
 use Pecee\SimpleRouter\ClassLoader\IClassLoader;
 use Pecee\SimpleRouter\Exceptions\ClassNotFoundHttpException;
+use Elmts\Core\Services\DiContainerService;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -31,7 +32,7 @@ class RouterClassLoader implements IClassLoader
      *
      * @param ContainerInterface $container Kontener iniekcji zależności.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(DiContainerService $container)
     {
         $this->container = $container;
     }
