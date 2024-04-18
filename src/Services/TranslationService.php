@@ -140,6 +140,24 @@ class TranslationService implements ITranslationService
     }
 
     /**
+     * Zamienia zmienne w tekście, korzystając z wyrażeń regularnych.
+     *
+     * Metoda wyszukuje w podanym tekście wszystkie wystąpienia szablonów zmiennych
+     * w formacie {{nazwaZmiennej}} i zamienia je na odpowiednie wartości.
+     * Jeśli zmienna nie istnieje, zostanie zastąpiona domyślną wartością, która
+     * jest formatem szablonu tej zmiennej.
+     *
+     * @param string $text Tekst, w którym mają zostać zamienione zmienne.
+     * @return string Tekst z zamienionymi zmiennymi.
+     */
+    protected function replaceVariables(string $text): string {
+        return preg_replace_callback('/{{(\w+)}}/', function ($matches) {
+            $variableName = $matches[1];
+            return $this->getVariable($variableName, "{{{$variableName}}}");
+        }, $text);
+    }
+
+    /**
      * Tłumaczy podany klucz na obecny język. Zwraca klucz, jeśli tłumaczenie nie zostanie znalezione.
      * Rzuca wyjątek, jeśli wystąpi problem z dostępem do tłumaczeń.
      *
@@ -150,7 +168,8 @@ class TranslationService implements ITranslationService
     public function translate(string $key): string
     {
         try {
-            return $this->translations[$key] ?? $key;
+            $translation = $this->translations[$key] ?? $key;
+            return $this->replaceVariables($translation);
         } catch (ElmtsException $e) {
             throw $e;
         }
