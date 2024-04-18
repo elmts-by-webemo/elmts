@@ -6,22 +6,87 @@ use Elmts\Core\Interfaces\ITranslationService;
 use Elmts\Core\Interfaces\ITranslationLoader;
 use Elmts\Core\Exceptions\ElmtsException;
 
+/**
+ * Usługa singletonowa do obsługi tłumaczeń.
+ * Ta klasa zarządza tłumaczeniami oraz zmiennymi związanymi z różnymi językami.
+ * 
+ * @package Elmts\Core\Services
+ * @version 1.0.0
+ * - created 2024-04-18
+ * - modified 2024-04-18
+ * - GPT simplyPHPDoc-Gen
+ */
 class TranslationService implements ITranslationService
 {
+    /**
+     * Jedyna instancja klasy.
+     * 
+     * @var self|null
+     */
     private static $instance = null;
+
+    /**
+     * Tablica przechowująca tłumaczenia.
+     * 
+     * @var array
+     */
     private $translations = [];
+    
+    /**
+     * Tablica przechowująca zmienne używane w tłumaczeniach.
+     * 
+     * @var array
+     */
     private $variables = [];
 
+    /**
+     * Ładowarka do pobierania tłumaczeń.
+     * 
+     * @var ITranslationLoader
+     */
     private $translationLoader;
+    
+    /**
+     * Aktualny język dla tłumaczeń.
+     * 
+     * @var string
+     */
     private $currentLanguage;
 
+    /**
+     * Konstruuje nową instancję usługi tłumaczeniowej.
+     *
+     * @param ITranslationLoader $translationLoader Ładowarka danych tłumaczeniowych.
+     * @param string $language Początkowy język do ustawienia.
+     */
     private function __construct(ITranslationLoader $translationLoader, $language='')
     {
         $this->translationLoader = $translationLoader;
         $this->setLanguage($language);
     }
 
-    public static function getInstance(ITranslationLoader $translationLoader, $language=''): TranslationService
+    /**
+     * Zapobiega klonowaniu instancji singletona.
+     */
+    private function __clone() {}
+
+    /**
+     * Zapobiega deserializacji instancji singletona.
+     *
+     * @throws ElmtsException Jeśli próba deserializacji zostanie podjęta.
+     */
+    public function __wakeup() {
+        throw new ElmtsException("Cannot unserialize a singleton.");
+    }
+
+    /**
+     * Zwraca jedyną instancję klasy.
+     *
+     * @param ITranslationLoader $translationLoader Ładowarka danych tłumaczeniowych.
+     * @param string $language Początkowy język do ustawienia, domyślnie APP_LOCALE jeśli nie podano.
+     * @return self Jedyna instancja klasy.
+     */
+    public static function getInstance(ITranslationLoader $translationLoader, $language=''): self
     {
         if($language==''){
             $language=envParam('APP_LOCALE');
@@ -33,6 +98,12 @@ class TranslationService implements ITranslationService
         return self::$instance;
     }
 
+    /**
+     * Ustawia język dla tłumaczeń.
+     *
+     * @param string $language Język do ustawienia.
+     * @throws ElmtsException Jeśli wystąpi błąd podczas ładowania tłumaczeń.
+     */
     public function setLanguage($language)
     {
         try {
@@ -44,25 +115,37 @@ class TranslationService implements ITranslationService
         }
     }
 
+    /**
+     * Pobiera tłumaczenie na podstawie klucza, z opcjonalną domyślną wartością.
+     *
+     * @param string $key Klucz tłumaczenia.
+     * @param string $default Domyślna wartość, jeśli klucz nie zostanie znaleziony.
+     * @return string Tłumaczenie lub wartość domyślna.
+     */
     public function get(string $key, string $default = ''): string
     {
         return $this->translations[$key] ?? $default;
     }
 
+    /**
+     * Pobiera zmienną tłumaczenia na podstawie klucza, z opcjonalną domyślną wartością.
+     *
+     * @param string $key Klucz zmiennej.
+     * @param mixed $default Domyślna wartość, jeśli klucz nie zostanie znaleziony.
+     * @return mixed Wartość zmiennej lub wartość domyślna.
+     */
     public function getVariable(string $key, $default = null)
     {
         return $this->variables[$key] ?? $default;
     }
 
     /**
-     * Zwraca tłumaczenie dla podanego klucza.
-     * 
-     * Jeśli tłumaczenie dla klucza nie zostanie znalezione, zwraca sam klucz.
-     * Rzuca ElmtsException w przypadku problemów z dostępem do tłumaczeń.
+     * Tłumaczy podany klucz na obecny język. Zwraca klucz, jeśli tłumaczenie nie zostanie znalezione.
+     * Rzuca wyjątek, jeśli wystąpi problem z dostępem do tłumaczeń.
      *
-     * @param string $key Klucz tłumaczenia do pobrania.
-     * @throws ElmtsException W przypadku problemów z pobraniem tłumaczenia.
-     * @return string Tłumaczenie dla klucza lub klucz, jeśli tłumaczenie nie zostanie znalezione.
+     * @param string $key Klucz tłumaczenia do przetłumaczenia.
+     * @throws ElmtsException Jeśli wystąpi problem z pobraniem tłumaczenia.
+     * @return string Przetłumaczony tekst lub klucz, jeśli tłumaczenie nie zostanie znalezione.
      */
     public function translate(string $key): string
     {
