@@ -29,10 +29,10 @@ interface ILoggerConfig
     /**
      * Pobiera poziom debugowania z konfiguracji.
      *
-     * @return int Poziom debugowania.
+     * @return string Poziom debugowania.
      * @throws ElmtsException Jeśli konfiguracja nie zawiera poziomu debugowania.
      */
-    public function getDebugLevel(): int;
+    public function getDebugLevel(): string;
 
     /**
      * Pobiera flagę debugowania z konfiguracji.
