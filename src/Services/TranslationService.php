@@ -88,8 +88,10 @@ class TranslationService implements ITranslationService
      */
     public static function getInstance(ITranslationLoader $translationLoader, $language=''): self
     {
-        if($language==''){
-            $language=envParam('APP_LOCALE');
+        if ($language === '') {
+            $language = envParam('APP_LOCALE');
+        } elseif (!is_string($language)) {
+            throw new InvalidArgumentException('Language must be a string.');
         }
 
         if (self::$instance === null) {
