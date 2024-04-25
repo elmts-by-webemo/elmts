@@ -42,11 +42,25 @@ class MonologAdapter implements ILogger
             $name = $config->getLoggerName();
             $logPath = $config->getLoggerPath();
             $debugLevel = $config->getDebugLevel();            
+            
+            // Mapowanie stringa na stałą Monologa
+            $levelMap = [
+                'DEBUG'     => MonologLogger::DEBUG,
+                'INFO'      => MonologLogger::INFO,
+                'NOTICE'    => MonologLogger::NOTICE,
+                'WARNING'   => MonologLogger::WARNING,
+                'ERROR'     => MonologLogger::ERROR,
+                'CRITICAL'  => MonologLogger::CRITICAL,
+                'ALERT'     => MonologLogger::ALERT,
+                'EMERGENCY' => MonologLogger::EMERGENCY,
+            ];
+            $loggerLevel = $levelMap[$debugLevel] ?? MonologLogger::DEBUG;
+
             $currentLogDate=date('Y-m-d');
             $logFile = $logPath."/{$currentLogDate}.log";
 
             $this->logger = new MonologLogger($name);
-            $this->logger->pushHandler(new StreamHandler($logFile, MonologLogger::$debugLevel));
+            $this->logger->pushHandler(new StreamHandler($logFile, $loggerLevel));
         } catch (\Exception $e) {
             throw new ElmtsException('Error occurred while configuring logger: ' . $e->getMessage());
         }
