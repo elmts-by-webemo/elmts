@@ -18,7 +18,7 @@ class DumpHelper {
      */
     public static function dump($params) {
         echo '<code style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"><pre>DumpHelper:';
-        var_dump($translationService);
+        var_dump($params);
         echo '</pre></code>';
     }
 
@@ -29,7 +29,7 @@ class DumpHelper {
      */
     public static function dumpE($params) {
         echo '<code style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"><pre>DumpHelper:';
-        var_dump($translationService);
+        var_dump($params);
         echo '</pre></code>';
         exit();
     }
