@@ -90,4 +90,26 @@ class TranslationLoader implements ITranslationLoader
 
         return $translations;
     }
+
+    public function transform($flatArray)
+    {
+        $result = [];
+
+        foreach ($flatArray as $key => $value)
+        {
+            $keys = explode('.', $key);
+            $temp = &$result;
+            
+            foreach ($keys as $k)
+            {
+                if (!isset($temp[$k]))
+                {
+                    $temp[$k] = [];
+                }
+                $temp = &$temp[$k];
+            }
+            $temp = $value;
+        }
+        return $result;
+    }
 }
