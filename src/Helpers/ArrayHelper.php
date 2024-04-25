@@ -23,14 +23,22 @@ class ArrayHelper {
             $keys = explode('.', $key);
             $temp = &$result;
 
-            foreach ($keys as $k) {
-                if (!isset($temp[$k])) {
-                    $temp[$k] = [];
+            // Iteruj przez wszystkie segmenty klucza
+            for ($i = 0; $i < count($keys); $i++) {
+                $k = $keys[$i];
+                
+                // Jeżeli jesteśmy przy ostatnim segmencie, ustaw wartość
+                if ($i === count($keys) - 1) {
+                    $temp[$k] = $value;
+                } else {
+                    // Sprawdź, czy dalszy segment jest już tablicą, jeśli nie, zainicjuj go
+                    if (!isset($temp[$k]) || !is_array($temp[$k])) {
+                        $temp[$k] = [];
+                    }
+                    // Przesuń referencję temp do dalszego segmentu
+                    $temp = &$temp[$k];
                 }
-                $temp = &$temp[$k];
             }
-
-            $temp = $value;
         }
 
         return $result;
