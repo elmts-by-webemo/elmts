@@ -116,7 +116,8 @@ class TranslationService implements ITranslationService
     }
 
     /**
-     * Pobiera tłumaczenie na podstawie klucza, z opcjonalną domyślną wartością.
+     * Pobiera tłumaczenie na podstawie złożonego klucza.
+     * Klucz może być zagnieżdżony, np. "section.subsection.key".
      *
      * @param string $key Klucz tłumaczenia.
      * @param string $default Domyślna wartość, jeśli klucz nie zostanie znaleziony.
@@ -124,11 +125,22 @@ class TranslationService implements ITranslationService
      */
     public function get(string $key, string $default = ''): string
     {
-        return $this->translations[$key] ?? $default;
+        $keys = explode('.', $key);
+        $value = $this->translations;
+
+        foreach ($keys as $k) {
+            if (!isset($value[$k])) {
+                return $default;
+            }
+            $value = $value[$k];
+        }
+
+        return is_string($value) ? $value : $default;
     }
 
     /**
-     * Pobiera zmienną tłumaczenia na podstawie klucza, z opcjonalną domyślną wartością.
+     * Pobiera zmienną tłumaczenia na podstawie złożonego klucza.
+     * Klucz może być zagnieżdżony, np. "section.subsection.variable".
      *
      * @param string $key Klucz zmiennej.
      * @param mixed $default Domyślna wartość, jeśli klucz nie zostanie znaleziony.
@@ -136,8 +148,19 @@ class TranslationService implements ITranslationService
      */
     public function getVariable(string $key, $default = null)
     {
-        return $this->variables[$key] ?? $default;
+        $keys = explode('.', $key);
+        $value = $this->variables;
+
+        foreach ($keys as $k) {
+            if (!isset($value[$k])) {
+                return $default;
+            }
+            $value = $value[$k];
+        }
+
+        return $value;
     }
+
 
     /**
      * Zamienia zmienne w tekście, korzystając z wyrażeń regularnych.
@@ -151,27 +174,29 @@ class TranslationService implements ITranslationService
      * @return string Tekst z zamienionymi zmiennymi.
      */
     protected function replaceVariables(string $text): string {
-        return preg_replace_callback('/{{(\w+)}}/', function ($matches) {
+        // Zmodyfikowane wyrażenie regularne do obsługi zagnieżdżonych kluczy
+        return preg_replace_callback('/{{([\w\.]+)}}/', function ($matches) {
             $variableName = $matches[1];
             return $this->getVariable($variableName, "{{{$variableName}}}");
         }, $text);
     }
 
     /**
-     * Tłumaczy podany klucz na obecny język. Zwraca klucz, jeśli tłumaczenie nie zostanie znalezione.
-     * Rzuca wyjątek, jeśli wystąpi problem z dostępem do tłumaczeń.
+     * Tłumaczy podany klucz na obecny język, zwracając przetłumaczony tekst.
+     * Obsługuje zagnieżdżone klucze tłumaczeń oraz zmienne w tekście.
      *
      * @param string $key Klucz tłumaczenia do przetłumaczenia.
-     * @throws ElmtsException Jeśli wystąpi problem z pobraniem tłumaczenia.
      * @return string Przetłumaczony tekst lub klucz, jeśli tłumaczenie nie zostanie znalezione.
+     * @throws ElmtsException Jeśli wystąpi problem z dostępem do tłumaczeń.
      */
     public function translate(string $key): string
     {
         try {
-            $translation = $this->translations[$key] ?? $key;
+            $translation = $this->get($key, $key);
             return $this->replaceVariables($translation);
         } catch (ElmtsException $e) {
-            throw $e;
+            throw new ElmtsException("Translation error: " . $e->getMessage(), 0, $e);
         }
     }
+
 }
