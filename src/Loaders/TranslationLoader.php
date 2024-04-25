@@ -6,6 +6,7 @@ use Elmts\Core\Interfaces\ITranslationLoader;
 use Elmts\Core\Interfaces\ITranslationLoaderStrategy;
 use Elmts\Core\Exceptions\ElmtsException;
 use App\Config\MainConfig;
+use Elmts\Core\Facades\HelperFacade;
 
 /**
  * Loader tłumaczeń, odpowiedzialny za ładowanie tłumaczeń z plików.
@@ -54,8 +55,7 @@ class TranslationLoader implements ITranslationLoader
      * @throws ElmtsException Jeśli plik tłumaczeń nie istnieje.
      * @return array Tablica tłumaczeń dla podanego języka.
      */
-    public function load(string $language): array
-    {
+    public function load(string $language): array {
         $translations = [];
         $languageDirPath = $this->locationPath . "{$language}/";
 
@@ -70,46 +70,11 @@ class TranslationLoader implements ITranslationLoader
                 $fileName = basename($file, '.' . $extension);
                 $key = "__{$fileName}";
                 $fileTranslations = $strategy->load($file);
-
-                foreach ($fileTranslations as $transKey => $value) {
-                    $path = explode('.', $transKey);
-                    $temp = &$translations[$key];
-                    foreach ($path as $i => $segment) {
-                        if (!isset($temp[$segment])) {
-                            $temp[$segment] = [];
-                        }
-                        if ($i === count($path) - 1) {
-                            $temp[$segment] = $value;
-                        } else {
-                            $temp = &$temp[$segment];
-                        }
-                    }
-                }
+                $fileTranslations = HelperFacade::transformFlatToAsoc($fileTranslations);
+                $translations[$key] = $fileTranslations;
             }
         }
 
         return $translations;
-    }
-
-    public function transform($flatArray)
-    {
-        $result = [];
-
-        foreach ($flatArray as $key => $value)
-        {
-            $keys = explode('.', $key);
-            $temp = &$result;
-            
-            foreach ($keys as $k)
-            {
-                if (!isset($temp[$k]))
-                {
-                    $temp[$k] = [];
-                }
-                $temp = &$temp[$k];
-            }
-            $temp = $value;
-        }
-        return $result;
     }
 }
