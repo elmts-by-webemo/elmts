@@ -2,6 +2,7 @@
 namespace Elmts\Core\Facades;
 
 use Elmts\Core\Helpers\ArrayHelper;
+use Elmts\Core\Helpers\DumpHelper;
 use Elmts\Core\Exceptions\ElmtsException;
 
 /**
@@ -23,6 +24,7 @@ class HelperFacade
      */
     private static $helperMap = [
         'ArrayHelper' => ArrayHelper::class,
+        'DumpHelper' => DumpHelper::class,
     ];
 
     /**
