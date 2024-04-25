@@ -70,7 +70,7 @@ class TranslationLoader implements ITranslationLoader
                 $fileName = basename($file, '.' . $extension);
                 $key = "__{$fileName}";
                 $fileTranslations = $strategy->load($file);
-                $fileTranslations = HelperFacade::transformFlatToAsoc($fileTranslations);
+                $fileTranslations = HelperFacade::transformFlatToAssoc($fileTranslations);
                 $translations[$key] = $fileTranslations;
             }
         }
