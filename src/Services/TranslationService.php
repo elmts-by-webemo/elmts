@@ -108,7 +108,6 @@ class TranslationService implements ITranslationService
     {
         try {
             $this->translations = $this->translationLoader->load($language);
-            $this->variables = $this->translationLoader->loadVariables($language);
             $this->currentLanguage = $language;
         } catch (ElmtsException $e) {
             throw new ElmtsException("Could not load translations or variables for language: $language", 0, $e);

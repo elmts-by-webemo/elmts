@@ -74,14 +74,16 @@ class TranslationLoader implements ITranslationLoader
                 foreach ($fileTranslations as $transKey => $value) {
                     $path = explode('.', $transKey);
                     $temp = &$translations[$key];
-                    foreach ($path as $segment) {
+                    foreach ($path as $i => $segment) {
                         if (!isset($temp[$segment])) {
                             $temp[$segment] = [];
                         }
-                        $temp = &$temp[$segment];
+                        if ($i === count($path) - 1) {
+                            $temp[$segment] = $value;
+                        } else {
+                            $temp = &$temp[$segment];
+                        }
                     }
-                    $temp = $value;
-                    unset($temp);
                 }
             }
         }
