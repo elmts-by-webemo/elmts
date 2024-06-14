@@ -151,6 +151,6 @@ class LanguageController implements ILanguageController
      */
     public function getAvailableLanguages(): array
     {
-        return explode('|', $_ENV['LOCATION_TRANSLATIONS']);
+        return explode('|', $_ENV['APP_LOCALE_TRANSLATIONS']);
     }
 }

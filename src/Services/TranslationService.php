@@ -151,7 +151,7 @@ class TranslationService implements ITranslationService
     public function getVariable(string $key, $default = null)
     {
         $keys = explode('.', $key);
-        $value = $this->variables;
+        $value = $this->translations; //$this->variables;
 
         foreach ($keys as $k) {
             if (!isset($value[$k])) {
